@@ -1,0 +1,112 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="MAUIStateContainerLayoutSample.MainPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+    x:Name="MainPageContainer">
+
+    <ScrollView>
+        <StackLayout Padding="20" Spacing="10">
+
+            <Image
+                HeightRequest="150"
+                HorizontalOptions="Center"
+                SemanticProperties.Description="Cute dot net bot waving hi to you!"
+                Source="dotnet_bot.png">
+
+                <Image.Behaviors>
+                    <toolkit:IconTintColorBehavior TintColor="Red" />
+                </Image.Behaviors>
+            </Image>
+
+            <VerticalStackLayout
+                toolkit:StateContainer.CurrentState="{Binding CurrentState}"
+                toolkit:StateContainer.ShouldAnimateOnStateChange="True"
+                Spacing="25"
+                VerticalOptions="CenterAndExpand">
+
+                <toolkit:StateContainer.StateViews>
+
+                    <!--  Loading State  -->
+                    <VerticalStackLayout toolkit:StateView.StateKey="Loading">
+                        <ActivityIndicator
+                            HeightRequest="25"
+                            HorizontalOptions="CenterAndExpand"
+                            IsRunning="True"
+                            VerticalOptions="CenterAndExpand"
+                            WidthRequest="25"
+                            Color="Red" />
+
+                        <Label
+                            HorizontalOptions="CenterAndExpand"
+                            HorizontalTextAlignment="Center"
+                            Text="Loading ..." />
+                    </VerticalStackLayout>
+
+                    <!--  Empty State  -->
+                    <VerticalStackLayout toolkit:StateView.StateKey="Empty">
+
+                        <Image
+                            HeightRequest="200"
+                            HorizontalOptions="Center"
+                            Source="empty.png" />
+
+                    </VerticalStackLayout>
+
+                    <!--  Success State  -->
+                    <StackLayout
+                        toolkit:StateView.StateKey="Success"
+                        BindableLayout.ItemsSource="{Binding UserList}"
+                        HorizontalOptions="FillAndExpand"
+                        VerticalOptions="FillAndExpand">
+                        <BindableLayout.ItemTemplate>
+                            <DataTemplate>
+                                <Frame Padding="5" CornerRadius="0">
+                                    <StackLayout
+                                        Padding="10"
+                                        HorizontalOptions="FillAndExpand"
+                                        Orientation="Horizontal"
+                                        VerticalOptions="FillAndExpand">
+                                        <Label
+                                            x:Name="UserName"
+                                            HorizontalOptions="FillAndExpand"
+                                            Text="{Binding .}"
+                                            TextColor="Black" />
+                                        <Frame
+                                            Padding="7"
+                                            CornerRadius="15"
+                                            HeightRequest="30"
+                                            HorizontalOptions="EndAndExpand"
+                                            WidthRequest="30">
+                                            <Image Source="delete.png" />
+                                            <Frame.GestureRecognizers>
+                                                <TapGestureRecognizer Command="{Binding BindingContext.DeleteUserCommand, Source={x:Reference MainPageContainer}}" CommandParameter="{Binding .}" />
+                                            </Frame.GestureRecognizers>
+                                        </Frame>
+                                    </StackLayout>
+                                </Frame>
+                            </DataTemplate>
+                        </BindableLayout.ItemTemplate>
+                    </StackLayout>
+
+                </toolkit:StateContainer.StateViews>
+            </VerticalStackLayout>
+
+            <Entry
+                Placeholder="Type name"
+                Text="{Binding User}"
+                VerticalOptions="EndAndExpand" />
+
+            <Button
+                Margin="0,10,0,0"
+                Command="{Binding AddUserCommand}"
+                HorizontalOptions="CenterAndExpand"
+                Text="Add User" />
+
+        </StackLayout>
+
+    </ScrollView>
+
+
+</ContentPage>
